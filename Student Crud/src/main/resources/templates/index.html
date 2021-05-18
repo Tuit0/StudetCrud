@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+    <table border="2" id="student">
+        <div>
+            <caption><button onclick="Add()">Add Student</button></caption>
+        </div>
+    </table>
+<script>
+    fetch("/api/students/getAllStudents")
+        .then(response => {
+            if (!response.ok) {
+                alert("Error!")
+            }
+            return response.json();
+        })
+        .then(data => {
+            const html = data.object
+                .map(
+                    student => {
+                        return `
+
+
+                            <tr>
+                                <td>${student.firstname}</td>
+                                <td>${student.lastname}</td>
+                                <td>${student.email}</td>
+                                <td>${student.phone}</td>
+                                <td><button onclick="Edit(${student.id})">Edit</button></td>
+                                <td><button onclick="Delete(${student.id})">Delete</button></td>
+                            </tr>
+
+                        `
+                    }
+                ).join("");
+            document.querySelector("#student").insertAdjacentHTML("afterbegin", html);
+        })
+        .catch(
+            error => {
+                alert(error)
+            }
+        );
+    function Add() {
+        window.location.href="/add"
+    }
+    function Edit(id) {
+        window.location.href="/add?id="+id
+    }
+    function Delete(id) {
+        window.location.href="/api/students/deleteStudentById/"+id
+    }
+</script>
+</body>
+</html>
